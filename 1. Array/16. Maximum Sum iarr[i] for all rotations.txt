@@ -1,0 +1,69 @@
+/*
+You are given an array 'ARR' consisting of 'N' elements, and you need to find the maximum value of sum(i * ARR[i]) among all possible rotations of the given array. The rotations allowed are left rotation, and right rotation, and these rotations can be performed any number of times on the array.
+Sum(i * ARR[i]) denotes the summation of all values (i * ARR[i]) for every 'i', where 0 <= 'i' <= 'N' - 1.
+Note :
+1. The array follows 0-based indexing.
+2. In one rotation operation, all elements of the array will shift either towards the left or right by one index.
+3. The element at the extreme left index (i.e. 0th index) will shift to the 'N-1'th index after applying one left rotation on the array and the rest all the elements will shift to the 'i-1'th index.
+4. The element at the extreme right index (i.e. 'N-1'th index) will shift to the 0th index after applying one right rotation on the array and the rest of the elements will shift to the 'i' + 1'th index.
+Input Format :
+The first line of the input contains an integer 'T' denoting the number of test cases.
+
+The first line of each test case contains the integer 'N', denoting the size of the array.
+
+The second line of each test case contains 'N' space-separated integers denoting the array elements.
+Output Format :
+The only line of output of each test case should contain an integer, denoting the maximum value of sum(i * ARR[i]).
+Note :
+You don't need to print anything. It has already been taken care of. Just implement the given function.
+Constraints :
+1 <= T <= 10^2
+1 <= N <= 10^4
+0 <= ARR[i] <= 10^6
+
+Time Limit : 1sec
+Sample Input 1 :
+1
+5
+1 5 2 10 0
+Sample Output 1 :
+57   
+Explanation For Sample Input 1 :
+Sum of all i*ARR[i] values after 'X' rotations are as follows:
+After 0 rotations (original array): 0*1 + 1*5 + 2*2 + 3*10 + 4*0 = 39.
+We are choosing to rotate left.
+After 1 rotation to the left on the original array: 0*5 + 1*2 + 2*10 + 3*0 + 4*1 = 26.
+After 2 rotations to the left on the original array: 0*2 + 1*10 + 2*0 + 3*1 + 4*5 = 33.
+After 3 rotations to the left on the original array: 0*10 + 1*0 + 2*1 + 3*5 + 4*2 = 25.  
+After 4 rotations to the left on the original array: 0*0 + 1*1 + 2*5 + 3*2 + 4*10 = 57.
+57 is the maximum value of sum(i*ARR[i]) among all rotations of the given array.
+Sample Input 2 :
+1
+4
+1 2 3 4
+Sample Output 2 :
+20
+Explanation For Sample Input 2 :
+The original array has the maximum sum among all possible rotations of the array. The original array sums to 20, as 1*0 + 2*1 + 3*2 + 4*3 = 20. 
+
+*/
+
+long long maxmValueAmongAllRotations(vector < int > &arr, int n) {
+	// Write your code here.
+    long long int tot_sum = 0;
+    for(auto &x : arr) {
+        tot_sum += x;
+    }
+    long long int ans = 0;
+    long long int val = 0;
+    for(int i=0;i<n;i++) {
+        val = val + 1ll*i*arr[i];
+    }
+    ans = val;
+    for(int i=0;i+1<n;i++) {
+        val = val - tot_sum;
+        val = val + 1ll*(n)*arr[i];
+        ans = max(ans,val);
+    }
+    return ans;
+}
