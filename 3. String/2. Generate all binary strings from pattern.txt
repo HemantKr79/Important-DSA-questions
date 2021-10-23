@@ -1,0 +1,63 @@
+/*
+Problem Statement
+You're given a string 'STR' containing ‘0’, ‘1’ and ‘?’ special characters. Your task is to generate all the strings that are possible by replacing the special character ‘?’, with either of the characters ‘0’ or ‘1’.
+Input Format:
+The first line contains an integer 'T' denoting the number of test cases.
+
+The first line and the only line of each test case contains a string 'STR' containing ‘1’, ‘0’, and ‘?’ only. 
+Output Format:
+For each test case, return all the possible strings in a sorted order(from lexicographically smallest to largest) that can be generated in the manner as described in the problem statement.
+Note:
+1. You don’t need to print anything, It has already been taken care of. Just implement the given function.
+
+2. It is guaranteed that the number of special characters will not be more than 14.
+Constraints:
+1 <= T <= 50
+1 <= |STR| <= 30
+
+Where '|STR|' denotes the length of the string 'STR'.
+
+Time limit: 1 sec
+
+Sample Input 1:
+2
+1?0
+?
+Sample Output 1:
+110
+100
+0
+1
+Explanation Of Sample Output 1:
+In test case 1, There is only 1 ‘?’ at the second position, hence we can either replace it with either with 0 or 1, Hence 110 and 101 are the only two possible outputs.
+
+In test case 2, There is only one special character which can be replaced by either 0 or 1, Hence 0 and 1 are the possible outputs.
+Sample Input 2:
+2
+1??0
+1??0?101
+*/
+
+void solve(string &str,vector<string> &ans,int i) {
+    if(i==str.size() ) {
+        ans.push_back(str);
+        return;
+    }
+    if(str[i]=='?') {
+        str[i] = '0';
+        solve(str,ans,i+1);
+        str[i] = '1';
+        solve(str,ans,i+1);
+        str[i] = '?';
+    }
+    else {
+        solve(str,ans,i+1);
+    }
+}
+
+vector<string> binaryStrings(string &str) {
+    // Write your code here.
+    vector<string> ans;
+    solve(str,ans,0);
+    return ans;
+}
