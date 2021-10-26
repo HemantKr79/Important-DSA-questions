@@ -1,0 +1,126 @@
+/*
+Given two sorted arrays array1 and array2 of size m and n respectively. Find the median of the two sorted arrays.
+
+Example 1:
+
+Input:
+m = 3, n = 4
+array1[] = {1,5,9}
+array2[] = {2,3,6,7}
+Output: 5
+Explanation: The middle element for
+{1,2,3,5,6,7,9} is 5
+Example 2:
+
+Input:
+m = 2, n = 4
+array1[] = {4,6}
+array2[] = {1,2,3,5}
+Output: 3.5
+Your Task:
+The task is to complete the function MedianOfArrays() that takes array1 and array2 as input and returns their median. 
+
+Can you solve the problem in expected time complexity?
+
+Expected Time Complexity: O(min(log n, log m)).
+Expected Auxiliary Space: O((n+m)/2).
+
+Constraints: 
+0 ≤ m,n ≤ 104
+1 ≤ array1[i], array2[i] ≤ 105
+*/
+
+class Solution{
+    public:
+    double MedianOfArrays(vector<int>& array1, vector<int>& array2)
+    {
+        // Your code goes here
+        int n = array1.size();
+        int m = array2.size();
+        int total = n+m;
+        bool two_numbers = (total%2==0);
+        if(n==0) {
+            if(two_numbers) {
+                return (array2[m/2]+array2[(m/2)-1])/2.0;
+            }
+            else {
+                return (array2[m/2]);
+            }
+        }
+        if(m==0) {
+            if(two_numbers) {
+                return (array1[n/2]+array1[(n/2)-1])/2.0;
+            }
+            else {
+                return (array1[n/2]);
+            }
+        }
+        int nbm = (total)/2;
+        if(two_numbers) {
+            --nbm;
+        }
+        int s = 0;
+        int e = nbm;
+        int mid;
+        while(s<=e) {
+            mid = (s+e)/2;
+            int rem = nbm - mid;
+            if(mid < n) {
+                if(rem < m) {
+                    if(mid>0 && array1[mid-1]>array2[rem]) {
+                        e = mid - 1;
+                    }
+                    else if(rem>0 && array2[rem-1]>array1[mid]) {
+                        s = mid + 1;
+                    }
+                    else {
+                        int a = array1[mid];
+                        int b = array2[rem];
+                        if(a<b) {
+                            if(mid+1<n) {
+                                b = min(b,array1[mid+1]);
+                            }
+                            if(two_numbers) {
+                                return (a+b)/2.0;
+                            }
+                            return a;
+                        }
+                        else {
+                            if(rem+1<m) {
+                                a = min(a,array2[rem+1]);
+                            }
+                            if(two_numbers) {
+                                return (a+b)/2.0;
+                            }
+                            return b;
+                        }
+                    }
+                }
+                else {
+                    int nmid = mid + (rem-m);
+                    if(array1[nmid]<array2[m-1]) {
+                        s = mid + 1;
+                    }
+                    else {
+                        if(two_numbers) {
+                            return (array1[nmid]+array1[nmid+1])/2.0;
+                        }
+                        return array1[nmid];
+                    }
+                }
+            }
+            else {
+                int nrem = rem + (mid-n);
+                if(array2[nrem]<array1[n-1]) {
+                    e = mid - 1;
+                }
+                else {
+                    if(two_numbers) {
+                        return (array2[nrem]+array2[nrem+1])/2.0;
+                    }
+                    return array2[nrem];
+                }
+            }
+        }
+    }
+};
