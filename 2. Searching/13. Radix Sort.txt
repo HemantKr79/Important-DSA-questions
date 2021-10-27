@@ -1,0 +1,80 @@
+/*
+Given an array of integers nums, sort the array in ascending order.
+
+ 
+
+Example 1:
+
+Input: nums = [5,2,3,1]
+Output: [1,2,3,5]
+Example 2:
+
+Input: nums = [5,1,1,2,0,0]
+Output: [0,0,1,1,2,5]
+ 
+
+Constraints:
+
+1 <= nums.length <= 5 * 104
+-5 * 104 <= nums[i] <= 5 * 104
+*/
+
+class Solution {
+public:
+    vector<int> radix_sort(vector<int> &nums) {
+        int n = nums.size();
+        int max_digits = 0;
+        for(auto x : nums) {
+            int digits = 0;
+            while(x>0) {
+                x /= 10;
+                ++digits;
+            }
+            max_digits = max(max_digits,digits);
+        }
+        vector<int> aux_array(nums.begin(),nums.end());
+        vector<vector<int> > buckets(10);
+        for(int pass=0;pass<max_digits;pass++) {
+            for(int i=0;i<n;i++) {
+                int x = aux_array[i];
+                for(int k=0;k<pass;k++) {
+                    x = x/10;
+                }
+                int digit = x%10;
+                buckets[digit].push_back(aux_array[i]);
+            }
+            int k = 0;
+            for(int i=0;i<10;i++) {
+                for(auto &item : buckets[i]) {
+                    aux_array[k] = item;
+                    ++k;
+                }
+                buckets[i].clear();
+            }
+        }
+        return aux_array;
+    }
+    vector<int> sortArray(vector<int>& nums) {
+        vector<int> negative,positive;
+        int n = nums.size();
+        for(int i=0;i<n;i++) {
+            if(nums[i]<0) {
+                negative.push_back(-1*nums[i]);
+            }
+            else {
+                positive.push_back(nums[i]);
+            }
+        }
+        negative = radix_sort(negative);
+        positive = radix_sort(positive);
+        reverse(negative.begin(),negative.end());
+        vector<int> ans;
+        for(auto &item : negative) {
+            ans.push_back(-1*item);
+        }
+        for(auto &item : positive) {
+            ans.push_back(item);
+        }
+        return ans;
+    }
+};
