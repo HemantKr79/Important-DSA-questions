@@ -1,0 +1,121 @@
+/*
+Given an array of digits digits, return the largest multiple of three that can be formed by concatenating some of the given digits in any order. If there is no answer return an empty string.
+
+Since the answer may not fit in an integer data type, return the answer as a string. Note that the returning answer must not contain unnecessary leading zeros.
+
+ 
+
+Example 1:
+
+Input: digits = [8,1,9]
+Output: "981"
+Example 2:
+
+Input: digits = [8,6,7,1,0]
+Output: "8760"
+Example 3:
+
+Input: digits = [1]
+Output: ""
+Example 4:
+
+Input: digits = [0,0,0,0,0,0]
+Output: "0"
+ 
+
+Constraints:
+
+1 <= digits.length <= 104
+0 <= digits[i] <= 9
+*/
+
+
+class Solution {
+public:
+    string return_ans(vector<int> &freq) {
+        int n = 0;
+        string ans;
+        for(int i=9;i>=0;i--) {
+            n += freq[i];
+            for(int j=0;j<freq[i];j++) {
+                ans.push_back('0'+i);
+            }
+        }
+        if(n==0) {
+            return "";
+        }
+        if(freq[0]==n) {
+            return "0";
+        }
+        return ans;
+    }
+    string largestMultipleOfThree(vector<int>& digits) {
+        vector<int> freq(10);
+        int sum = 0;
+        int n = digits.size();
+        for(auto &x : digits) {
+            freq[x] += 1;
+            sum += x;
+        }
+        string ans;
+        if(sum%3==0) {
+            return return_ans(freq);
+        }
+        else if(sum%3==1) {
+            vector<int> to_remove = {1,4,7};
+            for(auto &x : to_remove) {
+                if(freq[x] > 0) {
+                    freq[x] -= 1;
+                    return return_ans(freq);
+                }
+            }
+            to_remove = {2,5,8};
+            for(int i=0;i<3;i++) {
+                for(int j=0;j<3;j++) {
+                    if(i==j) {
+                        if(freq[to_remove[i]] >= 2) {
+                            freq[to_remove[i]] -= 2;
+                            return return_ans(freq);
+                        }
+                    }
+                    else {
+                        if(freq[to_remove[i]]>0 && freq[to_remove[j]]>0) {
+                            freq[to_remove[i]] -= 1;
+                            freq[to_remove[j]] -= 1;
+                            return return_ans(freq);
+                        }
+                    }
+                }
+            }
+            return "";
+        }
+        else {
+            vector<int> to_remove = {2,5,8};
+            for(auto &x : to_remove) {
+                if(freq[x] > 0) {
+                    freq[x] -= 1;
+                    return return_ans(freq);
+                }
+            }
+            to_remove = {1,4,7};
+            for(int i=0;i<3;i++) {
+                for(int j=0;j<3;j++) {
+                    if(i==j) {
+                        if(freq[to_remove[i]] >= 2) {
+                            freq[to_remove[i]] -= 2;
+                            return return_ans(freq);
+                        }
+                    }
+                    else {
+                        if(freq[to_remove[i]]>0 && freq[to_remove[j]]>0) {
+                            freq[to_remove[i]] -= 1;
+                            freq[to_remove[j]] -= 1;
+                            return return_ans(freq);
+                        }
+                    }
+                }
+            }
+            return "";
+        }
+    }
+};
