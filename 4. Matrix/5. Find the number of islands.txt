@@ -1,0 +1,83 @@
+/*
+Given a grid consisting of '0's(Water) and '1's(Land). Find the number of islands.
+Note: An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically or diagonally i.e., in all 8 directions.
+ 
+
+Example 1:
+
+Input:
+grid = {{0,1},{1,0},{1,1},{1,0}}
+Output:
+1
+Explanation:
+The grid is-
+0 1
+1 0
+1 1
+1 0
+All lands are connected.
+Example 2:
+
+Input:
+grid = {{0,1,1,1,0,0,0},{0,0,1,1,0,1,0}}
+Output:
+2
+Expanation:
+The grid is-
+0 1 1 1 0 0 0
+0 0 1 1 0 1 0 
+There are two islands one is colored in blue 
+and other in orange.
+ 
+
+Your Task:
+You don't need to read or print anything. Your task is to complete the function numIslands() which takes grid as input parameter and returns the total number of islands.
+ 
+
+Expected Time Compelxity: O(n*m)
+Expected Space Compelxity: O(n*m)
+ 
+
+Constraints:
+1 ≤ n, m ≤ 500
+*/
+
+int dx[] = {-1,-1,-1,0,0,1,1,1};
+int dy[] = {-1,0,1,-1,1,-1,0,1};
+class Solution {
+public:
+    void flood_fill(vector<vector<char>> &grid,int i,int j,char to_replace,char replace_by) {
+        queue<pair<int,int> > q;
+        q.push(make_pair(i,j));
+        grid[i][j] = replace_by;
+        while(!q.empty()) {
+            pair<int,int> fv = q.front();
+            q.pop();
+            for(int x=0;x<8;x++) {
+                int k,y;
+                k = fv.first + dx[x];
+                y = fv.second + dy[x];
+                if(k>=0 && k<grid.size() && y>=0 && y<grid[0].size()) {
+                    if(grid[k][y]==to_replace) {
+                        q.push(make_pair(k,y));
+                        grid[k][y] = replace_by;
+                    }
+                }
+            }
+        }
+    }
+    int numIslands(vector<vector<char>>& grid) {
+        // Code here
+        int c = 'a';
+        int ans = 0;
+        for(int i=0;i<grid.size();i++) {
+            for(int j=0;j<grid[0].size();j++) {
+                if(grid[i][j]=='1') {
+                    flood_fill(grid,i,j,'1',c);
+                    ++ans;
+                }
+            }
+        }
+        return ans;
+    }
+};
