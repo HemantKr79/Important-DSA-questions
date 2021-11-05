@@ -1,0 +1,42 @@
+/*
+You have been given a 2-D matrix ‘MAT’ of size ‘N’ x ‘N’ i.e. N rows and N columns. Your task is to find the maximum value of ‘MAT[a][b]’ - ‘MAT[c][d]’ over all possible indices (0 <= ‘a’, ‘b’, ‘c’, ‘d’ < ‘N’) such that . ‘a’ > ‘c’ and ‘b’ > ‘d’.
+
+Input Format:
+The first line of input contains an integer 'T' which denotes the number of test cases or queries to be run. Then the test cases follow.
+
+The first line of each test case contains one integer ‘N’ representing the number of rows (or columns) of the square matrix ‘MAT’.
+
+The next ‘N’ lines of each test case contain ‘N’ single space-separated integers denoting the values of ‘MAT’.
+Output Format :
+For each test case, print the maximum value of ‘MAT[a][b]’ - ‘MAT[c][d]’ over all possible choices of indices i.e. 0 <= ‘a’, ‘b’, ‘c’, ‘d’ < ‘N’ such that  ‘a’ > ‘c’ and ‘b’ > ‘d’.
+
+Print the output of each test case in a separate line.
+Note:
+You do not need to print anything; it has already been taken care of. Just implement the given function.
+Constraints:
+1 <= ‘T’ <= 100
+2 <= ‘N’ <= 100
+-10^5 <= ‘MAT[i][j]’ <= 10^5
+
+Time Limit : 1 second
+*/
+
+int findMaxValue(vector<vector<int>>& mat, int n) {
+	// Write your code here.
+    vector<vector<int> > top(n,vector<int>(n));
+    top[0][0] = mat[0][0];
+    int ans = INT_MIN;
+    for(int j=1;j<n;j++) {
+        top[0][j] = min(top[0][j-1],mat[0][j]);
+    }
+    for(int i=1;i<n;i++) {
+        int mn_val = mat[i][0];
+        top[i][0] = min(mn_val,top[i-1][0]);
+        for(int j=1;j<n;j++) {
+            ans = max(ans,mat[i][j] - top[i-1][j-1]);
+            mn_val = min(mn_val,mat[i][j]);
+            top[i][j] = min(mn_val,top[i-1][j]);
+        }
+    }
+    return ans;
+}
