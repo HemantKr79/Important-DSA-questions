@@ -1,0 +1,139 @@
+/*
+Given a string s that contains parentheses and letters, remove the minimum number of invalid parentheses to make the input string valid.
+
+Return all the possible results. You may return the answer in any order.
+
+ 
+
+Example 1:
+
+Input: s = "()())()"
+Output: ["(())()","()()()"]
+Example 2:
+
+Input: s = "(a)())()"
+Output: ["(a())()","(a)()()"]
+Example 3:
+
+Input: s = ")("
+Output: [""]
+ 
+
+Constraints:
+
+1 <= s.length <= 25
+s consists of lowercase English letters and parentheses '(' and ')'.
+There will be at most 20 parentheses in s.
+*/
+
+class Node {
+    public:
+    char data;
+    bool isterminal;
+    map<char,Node*> children;
+    Node(char data) {
+        this->data = data;
+        isterminal = false;
+    }
+    ~Node() {
+        for(auto item : children) {
+            delete item.second;
+        }
+        children.clear();
+    }
+};
+
+class Trie {
+    public:
+    Node *root;
+    Trie() {
+        root = new Node('\0');
+    }
+    void insert(string &str) {
+        Node *tmp = root;
+        for(int i=0;i<str.length();i++) {
+            if(!tmp->children.count(str[i]-'a')) {
+                tmp->children[str[i]-'a'] = new Node(str[i]);
+            }
+            tmp = tmp->children[str[i]-'a'];
+        }
+        tmp->isterminal = true;
+    }
+    bool find(string &str) {
+        Node *tmp = root;
+        for(int i=0;i<str.length();i++) {
+            if(!tmp->children.count(str[i]-'a')) {
+                return false;
+            }
+            tmp = tmp->children[str[i]-'a'];
+        }
+        return tmp->isterminal;
+    }
+    Node* getRoot() {
+        return root;
+    }
+    void clear() {
+        for(auto item : root->children) {
+            delete item.second;
+        }
+        root->children.clear();
+    }
+};
+
+Trie t;
+int mxlen = 0;
+
+class Solution {
+public:
+    void solve(string &s,string &str,vector<string> &ans,int n_open,int n_close,int i,int ignore,int n) {
+        if(i==n) {
+            if(n_open==n_close && !t.find(str)) {
+                if(str.length() >= mxlen) {
+                    mxlen = str.length();
+                    ans.push_back(str);
+                    t.insert(str);
+                }
+            }
+            return;
+        }
+        if(ignore < 0) {
+            return;
+        }
+        solve(s,str,ans,n_open,n_close,i+1,ignore-1,n);
+        if(s[i]=='(') {
+            str.push_back('(');
+            solve(s,str,ans,n_open+1,n_close,i+1,ignore,n);
+            str.pop_back();
+        }
+        else if(s[i]==')') {
+            if(n_close < n_open) {
+                str.push_back(')');
+                solve(s,str,ans,n_open,n_close+1,i+1,ignore,n);
+                str.pop_back();
+            }
+        }
+        else {
+            str.push_back(s[i]);
+            solve(s,str,ans,n_open,n_close,i+1,ignore,n);
+            str.pop_back();
+        }
+    }
+    vector<string> removeInvalidParentheses(string s) {
+        t.clear();
+        vector<string> ans;
+        int n = s.length();
+        string str;
+        mxlen = 0;
+        solve(s,str,ans,0,0,0,s.length(),n);
+        vector<string> v;
+        for(auto &x : ans) {
+            if(x.length()==mxlen) {
+                v.push_back(x);
+            }
+        }
+        if(v.empty()) {
+            v.push_back("");
+        }
+        return v;
+    }
+};
